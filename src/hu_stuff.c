@@ -743,30 +743,40 @@ static void Got_Saycmd(UINT8 **p, INT32 playernum)
 		}
 		else
         {
-			const UINT8 color = players[playernum].skincolor;
+			UINT16 chatcolor = skincolors[players[playernum].skincolor].chatcolor;
 
-			cstart = "\x83";
-
-			if (color <= SKINCOLOR_SILVER)
-				cstart = "\x80"; // White
-			else if (color <= SKINCOLOR_BLACK)
-				cstart = "\x86"; // Grey
-			else if (color <= SKINCOLOR_BLUE)
-				cstart = "\x84"; // Blue
-			else if (color <= SKINCOLOR_PEACH)
-				cstart = "\x87"; //... Orange???
-			else if (color == SKINCOLOR_PINK)
-				cstart = "\x85"; // Red.
-			else if (color <= SKINCOLOR_PURPLE)
-				cstart = "\x81"; // Purple
-			else if (color <= SKINCOLOR_ROSEWOOD)
-				cstart = "\x87"; // Orange
-			else if (color <= SKINCOLOR_DARKRED)
-				cstart = "\x85"; // Red
-			else if (color <= SKINCOLOR_OLIVE)
-				cstart = "\x83"; // green
-			else if (color <= SKINCOLOR_GOLD)
-				cstart = "\x82"; // Yellow
+			if (!chatcolor || chatcolor%0x1000 || chatcolor>V_INVERTMAP)
+				cstart = "\x80";
+			else if (chatcolor == V_MAGENTAMAP)
+				cstart = "\x81";
+			else if (chatcolor == V_YELLOWMAP)
+				cstart = "\x82";
+			else if (chatcolor == V_GREENMAP)
+				cstart = "\x83";
+			else if (chatcolor == V_BLUEMAP)
+				cstart = "\x84";
+			else if (chatcolor == V_REDMAP)
+				cstart = "\x85";
+			else if (chatcolor == V_GRAYMAP)
+				cstart = "\x86";
+			else if (chatcolor == V_ORANGEMAP)
+				cstart = "\x87";
+			else if (chatcolor == V_SKYMAP)
+				cstart = "\x88";
+			else if (chatcolor == V_PURPLEMAP)
+				cstart = "\x89";
+			else if (chatcolor == V_AQUAMAP)
+				cstart = "\x8a";
+			else if (chatcolor == V_PERIDOTMAP)
+				cstart = "\x8b";
+			else if (chatcolor == V_AZUREMAP)
+				cstart = "\x8c";
+			else if (chatcolor == V_BROWNMAP)
+				cstart = "\x8d";
+			else if (chatcolor == V_ROSYMAP)
+				cstart = "\x8e";
+			else if (chatcolor == V_INVERTMAP)
+				cstart = "\x8f";
         }
 		prefix = cstart;
 

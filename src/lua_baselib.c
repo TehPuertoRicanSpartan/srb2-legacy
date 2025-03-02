@@ -26,6 +26,7 @@
 #include "hu_stuff.h"	// HU_AddChatText
 #include "console.h"
 #include "d_netcmd.h" // IsPlayerAdmin
+#include "m_menu.h" // Player Setup menu color stuff
 
 #include "lua_script.h"
 #include "lua_libs.h"
@@ -151,6 +152,43 @@ static int lib_isPlayerAdmin(lua_State *L)
 	if (!player)
 		return LUA_ErrInvalid(L, "player_t");
 	lua_pushboolean(L, IsPlayerAdmin(player-players));
+	return 1;
+}
+
+// M_MENU
+//////////////
+
+static int lib_pMoveColorBefore(lua_State *L)
+{
+	UINT16 color = (UINT16)luaL_checkinteger(L, 1);
+	UINT16 targ = (UINT16)luaL_checkinteger(L, 2);
+
+	NOHUD
+	M_MoveColorBefore(color, targ);
+	return 0;
+}
+
+static int lib_pMoveColorAfter(lua_State *L)
+{
+	UINT16 color = (UINT16)luaL_checkinteger(L, 1);
+	UINT16 targ = (UINT16)luaL_checkinteger(L, 2);
+
+	NOHUD
+	M_MoveColorAfter(color, targ);
+	return 0;
+}
+
+static int lib_pGetColorBefore(lua_State *L)
+{
+	UINT16 color = (UINT16)luaL_checkinteger(L, 1);
+	lua_pushinteger(L, M_GetColorBefore(color));
+	return 1;
+}
+
+static int lib_pGetColorAfter(lua_State *L)
+{
+	UINT16 color = (UINT16)luaL_checkinteger(L, 1);
+	lua_pushinteger(L, M_GetColorAfter(color));
 	return 1;
 }
 
@@ -2249,6 +2287,12 @@ static luaL_Reg lib[] = {
 	{"chatprintf", lib_chatprintf},
 	{"EvalMath", lib_evalMath},
 	{"IsPlayerAdmin", lib_isPlayerAdmin},
+
+	// m_menu
+	{"M_MoveColorAfter",lib_pMoveColorAfter},
+	{"M_MoveColorBefore",lib_pMoveColorBefore},
+	{"M_GetColorAfter",lib_pGetColorAfter},
+	{"M_GetColorBefore",lib_pGetColorBefore},
 
 	// m_random
 	{"P_RandomFixed",lib_pRandomFixed},

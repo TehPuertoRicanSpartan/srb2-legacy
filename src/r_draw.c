@@ -133,9 +133,9 @@ UINT32 nflatxshift, nflatyshift, nflatshiftup, nflatmask;
 static UINT8** translationtablecache[MAXSKINS + 4] = {NULL};
 
 
-// See also the enum skincolors_t
+// See also the enum skincolornum_t
 // TODO Callum: Can this be translated?
-const char *Color_Names[MAXSKINCOLORS] =
+const char *Color_Names[numskincolors] =
 {
 	"None",      // SKINCOLOR_NONE
 	"White",     // SKINCOLOR_WHITE
@@ -165,7 +165,7 @@ const char *Color_Names[MAXSKINCOLORS] =
 	"Gold"       // SKINCOLOR_GOLD
 };
 
-const UINT8 Color_Opposite[MAXSKINCOLORS*2] =
+const UINT8 Color_Opposite[numskincolors*2] =
 {
 	SKINCOLOR_NONE,8,   // SKINCOLOR_NONE
 	SKINCOLOR_BLACK,10, // SKINCOLOR_WHITE
@@ -195,7 +195,7 @@ const UINT8 Color_Opposite[MAXSKINCOLORS*2] =
 	SKINCOLOR_NONE,8    // SKINCOLOR_GOLD
 };
 
-CV_PossibleValue_t Color_cons_t[MAXSKINCOLORS+1];
+CV_PossibleValue_t Color_cons_t[numskincolors+1];
 
 /**	\brief The R_InitTranslationTables
 
@@ -506,7 +506,7 @@ static void R_GenerateTranslationColormap(UINT8 *dest_colormap, INT32 skinnum, U
 
 	\return	Colormap. If not cached, caller should Z_Free.
 */
-UINT8* R_GetTranslationColormap(INT32 skinnum, skincolors_t color, UINT8 flags)
+UINT8* R_GetTranslationColormap(INT32 skinnum, skincolornum_t color, UINT8 flags)
 {
 	UINT8* ret;
 	INT32 skintableindex;
@@ -523,7 +523,7 @@ UINT8* R_GetTranslationColormap(INT32 skinnum, skincolors_t color, UINT8 flags)
 
 		// Allocate table for skin if necessary
 		if (!translationtablecache[skintableindex])
-			translationtablecache[skintableindex] = Z_Calloc(MAXTRANSLATIONS * sizeof(UINT8**), PU_STATIC, NULL);
+			translationtablecache[skintableindex] = Z_Calloc(numskincolors * sizeof(UINT8**), PU_STATIC, NULL);
 
 		// Get colormap
 		ret = translationtablecache[skintableindex][color];
@@ -558,15 +558,15 @@ void R_FlushTranslationColormapCache(void)
 
 	for (i = 0; i < (INT32)(sizeof(translationtablecache) / sizeof(translationtablecache[0])); i++)
 		if (translationtablecache[i])
-			memset(translationtablecache[i], 0, MAXTRANSLATIONS * sizeof(UINT8**));
+			memset(translationtablecache[i], 0, numskincolors * sizeof(UINT8**));
 }
 
 UINT8 R_GetColorByName(const char *name)
 {
 	UINT8 color = (UINT8)atoi(name);
-	if (color > 0 && color < MAXSKINCOLORS)
+	if (color > 0 && color < numskincolors)
 		return color;
-	for (color = 1; color < MAXSKINCOLORS; color++)
+	for (color = 1; color < numskincolors; color++)
 		if (!stricmp(Color_Names[color], name))
 			return color;
 	return 0;

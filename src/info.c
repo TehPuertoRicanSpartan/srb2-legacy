@@ -19,6 +19,7 @@
 #include "m_misc.h"
 #include "z_zone.h"
 #include "d_player.h"
+#include "v_video.h" // V_*MAP constants
 #include "lzf.h"
 #ifdef HWRENDER
 #include "hardware/hw_light.h"
@@ -13767,7 +13768,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
 };
 
 
-/** Patches the mobjinfo table and state table.
+/** Patches the mobjinfo, state, and skincolor tables.
   * Free slots are emptied out and set to initial values.
   */
 void P_PatchInfoTables(void)
@@ -13795,6 +13796,12 @@ void P_PatchInfoTables(void)
 	sprnames[i][0] = '\0'; // i == NUMSPRITES
 	memset(&states[S_FIRSTFREESLOT], 0, sizeof (state_t) * NUMSTATEFREESLOTS);
 	memset(&mobjinfo[MT_FIRSTFREESLOT], 0, sizeof (mobjinfo_t) * NUMMOBJFREESLOTS);
+	memset(&skincolors[SKINCOLOR_FIRSTFREESLOT], 0, sizeof (skincolor_t) * NUMCOLORFREESLOTS);
+	for (i = SKINCOLOR_FIRSTFREESLOT; i <= SKINCOLOR_LASTFREESLOT; i++) {
+		skincolors[i].accessible = false;
+		skincolors[i].name[0] = '\0';
+	}
+	numskincolors = SKINCOLOR_FIRSTFREESLOT;
 	for (i = MT_FIRSTFREESLOT; i <= MT_LASTFREESLOT; i++)
 		mobjinfo[i].doomednum = -1;
 }
@@ -13803,7 +13810,8 @@ void P_PatchInfoTables(void)
 static char *sprnamesbackup;
 static state_t *statesbackup;
 static mobjinfo_t *mobjinfobackup;
-static size_t sprnamesbackupsize, statesbackupsize, mobjinfobackupsize;
+static skincolor_t *skincolorsbackup;
+static size_t sprnamesbackupsize, statesbackupsize, mobjinfobackupsize, skincolorsbackupsize;
 #endif
 
 void P_BackupTables(void)
@@ -13813,6 +13821,7 @@ void P_BackupTables(void)
 	sprnamesbackup = Z_Malloc(sizeof(sprnames), PU_STATIC, NULL);
 	statesbackup = Z_Malloc(sizeof(states), PU_STATIC, NULL);
 	mobjinfobackup = Z_Malloc(sizeof(mobjinfo), PU_STATIC, NULL);
+	skincolorsbackup = Z_Malloc(sizeof(skincolors), PU_STATIC, NULL);
 
 	// Sprite names
 	sprnamesbackupsize = lzf_compress(sprnames, sizeof(sprnames), sprnamesbackup, sizeof(sprnames));
@@ -13834,6 +13843,13 @@ void P_BackupTables(void)
 		mobjinfobackup = Z_Realloc(mobjinfobackup, mobjinfobackupsize, PU_STATIC, NULL);
 	else
 		M_Memcpy(mobjinfobackup, mobjinfo, sizeof(mobjinfo));
+
+	//Skincolor info
+	skincolorsbackupsize = lzf_compress(skincolors, sizeof(skincolors), skincolorsbackup, sizeof(skincolors));
+	if (skincolorsbackupsize > 0)
+		skincolorsbackup = Z_Realloc(skincolorsbackup, skincolorsbackupsize, PU_STATIC, NULL);
+	else
+		M_Memcpy(skincolorsbackup, skincolors, sizeof(skincolors));
 #endif
 }
 
@@ -13865,6 +13881,14 @@ void P_ResetData(INT32 flags)
 			lzf_decompress(mobjinfobackup, mobjinfobackupsize, mobjinfo, sizeof(mobjinfo));
 		else
 			M_Memcpy(mobjinfo, mobjinfobackup, sizeof(mobjinfobackup));
+	}
+
+	if (flags & 8)
+	{
+		if (skincolorsbackupsize > 0)
+			lzf_decompress(skincolorsbackup, skincolorsbackupsize, skincolors, sizeof(skincolors));
+		else
+			M_Memcpy(skincolors, skincolorsbackup, sizeof(skincolorsbackup));
 	}
 #endif
 }

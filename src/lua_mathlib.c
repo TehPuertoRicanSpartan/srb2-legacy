@@ -189,10 +189,10 @@ static int lib_all7emeralds(lua_State *L)
 static int lib_coloropposite(lua_State *L)
 {
 	UINT8 colornum = (UINT8)luaL_checkinteger(L, 1);
-	if (colornum >= MAXSKINCOLORS)
-		return luaL_error(L, "skincolor %d out of range (0 - %d).", colornum, MAXSKINCOLORS-1);
-	lua_pushinteger(L, Color_Opposite[colornum*2]); // push color
-	lua_pushinteger(L, Color_Opposite[colornum*2+1]); // push frame
+	if (!colornum || colornum >= numskincolors)
+		return luaL_error(L, "skincolor %d out of range (1 - %d).", colornum, numskincolors-1);
+	lua_pushinteger(L, skincolors[colornum].invcolor); // push color
+	lua_pushinteger(L, skincolors[colornum].invshade); // push sign shade index, 0-15
 	return 2;
 }
 
