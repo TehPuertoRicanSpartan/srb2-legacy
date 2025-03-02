@@ -15,6 +15,8 @@
 ///        not the architecture of the frame buffer.
 ///        The frame buffer is a linear one, and we need only the base address.
 
+// oh boy.
+
 #include "doomdef.h"
 #include "doomstat.h"
 #include "r_local.h"
