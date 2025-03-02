@@ -11,6 +11,8 @@
       SRB2 Legacy is an updated fork of Sonic Robo Blast 2 2.1.25.
       The goal of SRB2 Legacy is to include essential fixes and QOL
       improvements seen in 2.2.
+      This is a modified version to support custom skincolors as
+      seen in v2.2.
     </p>
   </description>
   <launchable type="desktop-id">org.srb2.srb2-legacy.desktop</launchable>
