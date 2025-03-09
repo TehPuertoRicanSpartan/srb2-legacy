@@ -7231,6 +7231,9 @@ static void M_DrawSetupMultiPlayerMenu(void)
 	}
 	else
 	{
+		for (i = 0; i < 15; i++)
+			V_DrawFill(mx + 90 - 2, my + 8 + (i * 4), 2, 4, skincolors[setupm_fakecolor].ramp[i])
+
 		UINT8 *colormap = R_GetTranslationColormap(setupm_fakeskin, setupm_fakecolor, 0);
 
 		if (skins[setupm_fakeskin].flags & SF_HIRES)
